@@ -1,31 +1,4 @@
 @description('Select any region to create resouces. You can default to the same region as the resource group.')
-@allowed([
-  'australiaeast'
-  'brazilsouth'
-  'canadacentral'
-  'centralus'
-  'westeurope'
-  'germanywestcentral'
-  'italynorth'
-  'japaneast'
-  'uksouth'
-  'eastus'
-  'eastus2'
-  'southafricanorth'
-  'southcentralus'
-  'southeastasia'
-  'switzerlandnorth'
-  'swedencentral'
-  'westus'
-  'westus2'
-  'westus3'
-  'centralindia'
-  'eastasia'
-  'northeurope'
-  'koreacentral'
-  ''
-])
-param location string = ''
 
 @description('The name of the Devcenter resource e.g. [devCenterName]')
 param devCenterName string

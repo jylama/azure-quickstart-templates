@@ -9,72 +9,38 @@
     }
   },
   "parameters": {
-    "location": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Select any region to create resouces. You can default to the same region as the resource group."
-      },
-      "allowedValues": [
-        "australiaeast",
-        "brazilsouth",
-        "canadacentral",
-        "centralus",
-        "westeurope",
-        "germanywestcentral",
-        "italynorth",
-        "japaneast",
-        "uksouth",
-        "eastus",
-        "eastus2",
-        "southafricanorth",
-        "southcentralus",
-        "southeastasia",
-        "switzerlandnorth",
-        "swedencentral",
-        "westus",
-        "westus2",
-        "westus3",
-        "centralindia",
-        "eastasia",
-        "northeurope",
-        "koreacentral",
-        ""
-      ]
-    },
     "devCenterName": {
       "type": "string",
+      "defaultValue": "my-example-devcenter-name",
       "metadata": {
         "description": "The name of the Devcenter resource e.g. [devCenterName]"
       }
     },
     "projectName": {
       "type": "string",
+      "defaultValue": "my-example-project-name",
       "metadata": {
         "description": "The name of the Project resource e.g. [projectName]"
       }
     },
-    "devBoxDefinitionName": {
-      "type": "string",
-      "metadata": {
-        "description": "A default Dev Box definition with Windows 11 Enterprise, Visual Studio 2022, 16 cores, 64GB RAM, and 512GB storage. The name of the Dev Dox Definition resource e.g [devBoxDefintionName]"
-      }
-    },
     "poolName": {
       "type": "string",
+      "defaultValue": "my-example-pool-name",
       "metadata": {
         "description": "A Microsoft Hosted Network Pool in the region of the resouce group. The name of the Pool resource e.g. [poolName]-[region]-pool"
       }
     }
   },
   "variables": {
+    "location": "[resourceGroup().location]",
     "roleDefinitionId": "45d50f46-0b78-4001-a660-4198cbe8cd05",
     "principalId": "[deployer().objectId]",
     "principalType": "User",
-    "formattedPoolName": "[format('{0}-{1}-pool', parameters('poolName'), parameters('location'))]",
+    "formattedPoolName": "[format('{0}-{1}-pool', parameters('poolName'), variables('location'))]",
     "poolPropertyAdmin": "Enabled",
     "poolPropertyNetworkType": "Managed",
     "poolPropertyNetworkName": "mhn-network",
+    "devBoxDefinitionName": "[format('{0}-Win11vs16core512gb-devboxdefinition', parameters('devCenterName'))]",
     "image_win11_ent_vs2022": "microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2",
     "compute_16c_64gb": "general_i_16c64gb512ssd_v2",
     "storage_512gb": "512gb"
@@ -84,7 +50,7 @@
       "type": "Microsoft.DevCenter/devcenters",
       "apiVersion": "2024-10-01-preview",
       "name": "[parameters('devCenterName')]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "tags": {
         "hidden-created-with": "devbox-quickstart-resource"
       },
@@ -107,7 +73,7 @@
       "type": "Microsoft.DevCenter/projects",
       "apiVersion": "2023-04-01",
       "name": "[parameters('projectName')]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "tags": {
         "hidden-created-with": "devbox-quickstart-resource"
       },
@@ -135,8 +101,8 @@
     {
       "type": "Microsoft.DevCenter/devcenters/devboxdefinitions",
       "apiVersion": "2024-08-01-preview",
-      "name": "[format('{0}/{1}', parameters('devCenterName'), parameters('devBoxDefinitionName'))]",
-      "location": "[parameters('location')]",
+      "name": "[format('{0}/{1}', parameters('devCenterName'), variables('devBoxDefinitionName'))]",
+      "location": "[variables('location')]",
       "tags": {
         "hidden-created-with": "devbox-quickstart-resource"
       },
@@ -157,19 +123,19 @@
       "type": "Microsoft.DevCenter/projects/pools",
       "apiVersion": "2024-10-01-preview",
       "name": "[format('{0}/{1}', parameters('projectName'), variables('formattedPoolName'))]",
-      "location": "[parameters('location')]",
+      "location": "[variables('location')]",
       "tags": {
         "hidden-created-with": "devbox-quickstart-resource"
       },
       "properties": {
-        "devBoxDefinitionName": "[parameters('devBoxDefinitionName')]",
+        "devBoxDefinitionName": "[variables('devBoxDefinitionName')]",
         "licenseType": "Windows_Client",
         "localAdministrator": "[variables('poolPropertyAdmin')]",
         "managedVirtualNetworkRegions": [
-          "[parameters('location')]"
+          "[variables('location')]"
         ],
         "virtualNetworkType": "[variables('poolPropertyNetworkType')]",
-        "networkConnectionName": "[format('{0}-{1}', variables('poolPropertyNetworkName'), parameters('location'))]"
+        "networkConnectionName": "[format('{0}-{1}', variables('poolPropertyNetworkName'), variables('location'))]"
       },
       "dependsOn": [
         "[resourceId('Microsoft.DevCenter/projects', parameters('projectName'))]"
