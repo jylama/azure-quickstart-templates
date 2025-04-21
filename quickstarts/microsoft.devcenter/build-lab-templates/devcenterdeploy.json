@@ -1,0 +1,82 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "devCenterName": {
+        "type": "string",
+        "metadata": {
+          "description": "The name of the Dev Center."
+        }
+      },
+      "location": {
+        "type": "string",
+        "metadata": {
+          "description": "The location for the Dev Center."
+        }
+      },
+      "userAssignedIdentityName": {
+        "type": "string",
+        "metadata": {
+          "description": "The name of the user-assigned managed identity."
+        }
+      },
+      "catalogRepositoryUrl": {
+        "type": "string",
+        "metadata": {
+          "description": "The URL of the project catalog repository."
+        }
+      }
+    },
+    "resources": [
+      {
+        "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+        "apiVersion": "2023-07-31-preview",
+        "name": "[parameters('userAssignedIdentityName')]",
+        "location": "[parameters('location')]",
+        "properties": {}
+      },
+      {
+        "type": "Microsoft.DevCenter/devcenters",
+        "apiVersion": "2024-10-01-preview",
+        "name": "[parameters('devCenterName')]",
+        "location": "[parameters('location')]",
+        "dependsOn": [
+          "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName'))]"
+        ],
+        "identity": {
+          "type": "UserAssigned",
+          "userAssignedIdentities": {
+            "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('userAssignedIdentityName'))]": {}
+          }
+        },
+        "properties": {
+          "projectCatalogSettings": {
+            "catalogItemSyncEnableStatus": "Enabled"
+          },
+          "networkSettings": {
+            "microsoftHostedNetworkEnableStatus": "Enabled"
+          },
+          "devBoxProvisioningSettings": {
+            "installAzureMonitorAgentEnableStatus": "Enabled"
+          }
+        },
+        "resources": [
+          {
+            "type": "catalogs",
+            "apiVersion": "2024-10-01-preview",
+            "name": "default-catalog",
+            "dependsOn": [
+              "[parameters('devCenterName')]"
+            ],
+            "properties": {
+              "gitHub": {
+                "uri": "[parameters('catalogRepositoryUrl')]",
+                "branch": "main",
+                "path": "/"
+              }
+            }
+          }
+        ]
+      }
+    ]
+  }

@@ -1,0 +1,39 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "userAssignedIdentityName": {
+            "value": "myUserAssignedIdentity"
+        },
+        "keyVaultName": {
+            "value": "myKeyVault"
+        },
+        "devCenterName": {
+            "value": "myDevCenter"
+        },
+        "projectName": {
+            "value": "myProject"
+        },
+        "secretName": {
+            "value": "GitHubPAT"
+        },
+        "secretValue": {
+            "value": "your-secure-secret-value"
+        },
+        "catalogRepositoryUrl": {
+            "value": "https://github.com/your-org/your-catalog-repo"
+        },
+        "location": {
+            "value": "eastus"
+        },
+        "catalogName": {
+            "value": "myCatalog"
+        },
+        "imageDefinitionName": {
+            "value": "myImageDefinition"
+        },
+        "currentTime": {
+            "value": "2025-04-18"
+        }
+    }
+}
