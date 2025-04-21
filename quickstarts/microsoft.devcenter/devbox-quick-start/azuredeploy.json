@@ -16,6 +16,13 @@
         "description": "The name of the Devcenter resource e.g. [devCenterName]"
       }
     },
+    "devCenterRegion": {
+      "type": "string",
+      "defaultValue": "West US 3",
+      "metadata": {
+        "description": "The region of the Devcenter resource, note that Devcenter is not available in all regions."
+      }
+    },
     "projectName": {
       "type": "string",
       "defaultValue": "my-example-project-name",
@@ -50,7 +57,7 @@
       "type": "Microsoft.DevCenter/devcenters",
       "apiVersion": "2024-10-01-preview",
       "name": "[parameters('devCenterName')]",
-      "location": "[variables('location')]",
+      "location": "[parameters('devCenterRegion')]",
       "tags": {
         "hidden-created-with": "devbox-quickstart-resource"
       },
@@ -113,7 +120,8 @@
         "sku": {
           "name": "[variables('compute_16c_64gb')]"
         },
-        "osStorageType": "[format('ssd_{0}', variables('storage_512gb'))]"
+        "osStorageType": "[format('ssd_{0}', variables('storage_512gb'))]",
+        "hibernateSupport": "Enabled"
       },
       "dependsOn": [
         "[resourceId('Microsoft.DevCenter/devcenters', parameters('devCenterName'))]"
