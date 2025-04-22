@@ -1,31 +1,30 @@
-@description('Select any region to create resouces. You can default to the same region as the resource group.')
-
 @description('The name of the Devcenter resource e.g. [devCenterName]')
-param devCenterName string
+param devCenterName string = 'my-example-devcenter-name'
+
+@description('The region of the Devcenter resource, note that Devcenter is not available in all regions.')
+param devCenterRegion string = 'West US 3'
 
 @description('The name of the Project resource e.g. [projectName]')
-param projectName string
-
-@description('A default Dev Box definition with Windows 11 Enterprise, Visual Studio 2022, 16 cores, 64GB RAM, and 512GB storage. The name of the Dev Dox Definition resource e.g [devBoxDefintionName]')
-param devBoxDefinitionName string
+param projectName string = 'my-example-project-name'
 
 @description('A Microsoft Hosted Network Pool in the region of the resouce group. The name of the Pool resource e.g. [poolName]-[region]-pool')
-param poolName string
+param poolName string = 'my-example-pool-name'
 
+var location = resourceGroup().location
 var roleDefinitionId = '45d50f46-0b78-4001-a660-4198cbe8cd05'
 var principalId = deployer().objectId
-var principalType = 'User'
 var formattedPoolName = '${poolName}-${location}-pool'
 var poolPropertyAdmin = 'Enabled'
 var poolPropertyNetworkType = 'Managed'
 var poolPropertyNetworkName = 'mhn-network'
+var devBoxDefinitionName = '${devCenterName}-Win11vs16core512gb-devboxdefinition'
 var image_win11_ent_vs2022 = 'microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2'
 var compute_16c_64gb = 'general_i_16c64gb512ssd_v2'
 var storage_512gb = '512gb'
 
 resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
   name: devCenterName
-  location: location
+  location: devCenterRegion
   tags: {
     'hidden-created-with': 'devbox-quickstart-resource'
   }
@@ -47,7 +46,7 @@ resource devCenter 'Microsoft.DevCenter/devcenters@2024-10-01-preview' = {
 
 resource project 'Microsoft.DevCenter/projects@2023-04-01' = {
   name: projectName
-  location: location
+  location: devCenterRegion
   tags: {
     'hidden-created-with': 'devbox-quickstart-resource'
   }
@@ -56,7 +55,7 @@ resource project 'Microsoft.DevCenter/projects@2023-04-01' = {
   }
 }
 
-resource principalId_roleDefinitionId 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource id_id_principalId_roleDefinitionId 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   scope: project
   name: guid(subscription().id, resourceGroup().id, principalId, roleDefinitionId)
   properties: {
@@ -69,7 +68,7 @@ resource principalId_roleDefinitionId 'Microsoft.Authorization/roleAssignments@2
 resource devCenterName_devBoxDefinition 'Microsoft.DevCenter/devcenters/devboxdefinitions@2024-08-01-preview' = {
   parent: devCenter
   name: devBoxDefinitionName
-  location: location
+  location: devCenterRegion
   tags: {
     'hidden-created-with': 'devbox-quickstart-resource'
   }
@@ -81,6 +80,7 @@ resource devCenterName_devBoxDefinition 'Microsoft.DevCenter/devcenters/devboxde
       name: compute_16c_64gb
     }
     osStorageType: 'ssd_${storage_512gb}'
+    hibernateSupport: 'Enabled'
   }
 }
 

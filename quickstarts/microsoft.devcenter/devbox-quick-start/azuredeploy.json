@@ -42,7 +42,6 @@
     "location": "[resourceGroup().location]",
     "roleDefinitionId": "45d50f46-0b78-4001-a660-4198cbe8cd05",
     "principalId": "[deployer().objectId]",
-    "principalType": "User",
     "formattedPoolName": "[format('{0}-{1}-pool', parameters('poolName'), variables('location'))]",
     "poolPropertyAdmin": "Enabled",
     "poolPropertyNetworkType": "Managed",
@@ -80,7 +79,7 @@
       "type": "Microsoft.DevCenter/projects",
       "apiVersion": "2023-04-01",
       "name": "[parameters('projectName')]",
-      "location": "[variables('location')]",
+      "location": "[parameters('devCenterRegion')]",
       "tags": {
         "hidden-created-with": "devbox-quickstart-resource"
       },
@@ -109,7 +108,7 @@
       "type": "Microsoft.DevCenter/devcenters/devboxdefinitions",
       "apiVersion": "2024-08-01-preview",
       "name": "[format('{0}/{1}', parameters('devCenterName'), variables('devBoxDefinitionName'))]",
-      "location": "[variables('location')]",
+      "location": "[parameters('devCenterRegion')]",
       "tags": {
         "hidden-created-with": "devbox-quickstart-resource"
       },
